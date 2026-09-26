@@ -10,19 +10,6 @@
   --accent-foreground: #0f1115;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-surface: var(--surface);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-border: var(--border);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-
-  --font-sans: var(--font-inter);
-  --font-display: var(--font-oswald);
-}
-
 * {
   box-sizing: border-box;
 }
