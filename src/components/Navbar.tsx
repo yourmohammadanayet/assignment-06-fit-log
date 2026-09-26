@@ -3,83 +3,104 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useFitLog } from "../context/FitLogContext";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { planCount, savedCount } = useFitLog();
 
   const isWorkoutActive =
     pathname === "/" || pathname.startsWith("/workout/");
 
   const isPlanActive = pathname.startsWith("/my-plan");
 
+  const navItemClass =
+    "flex h-[40px] w-[118px] items-center justify-center rounded-full text-sm transition-colors";
+
   return (
-    <header className="border-b border-[#202329] bg-[#0d0f12]">
-      <div className="mx-auto flex min-h-[72px] w-full max-w-[1180px] items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/primary-logo.svg"
-            alt="FitLog icon"
-            width={30}
-            height={30}
-            priority
-            className="h-[30px] w-[30px]"
-          />
+    <header
+      className="border-b"
+      style={{
+        backgroundColor: "#0C0D10",
+        borderColor: "#1A1C22",
+      }}
+    >
+      <div className="mx-auto grid min-h-[72px] w-full max-w-[1180px] grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:px-8">
+        {/* Left branding */}
+        <div className="justify-self-start">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/primary-logo.svg"
+              alt="FitLog icon"
+              width={30}
+              height={30}
+              priority
+              className="h-[30px] w-[30px] shrink-0"
+            />
 
-          <span
-            className="text-xl font-bold uppercase tracking-[0.05em] text-white"
-            style={{ fontFamily: "var(--font-oswald)" }}
-          >
-            FitLog
-          </span>
-        </Link>
+            <span
+              className="whitespace-nowrap text-xl font-bold uppercase tracking-[0.05em] text-white"
+              style={{ fontFamily: "var(--font-oswald)" }}
+            >
+              FitLog
+            </span>
+          </Link>
+        </div>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-5">
+        {/* Center navigation */}
+        <nav className="flex items-center gap-4 justify-self-center">
           <Link
             href="/"
-            className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-colors ${
-              isWorkoutActive
-                ? "bg-[#18230f] text-[#ccff00]"
-                : "text-[#9ca0aa] hover:text-white"
+            className={`${navItemClass} ${
+              isWorkoutActive ? "font-bold" : "font-normal"
             }`}
+            style={{
+              backgroundColor: isWorkoutActive
+                ? "#1A2312"
+                : "transparent",
+              color: isWorkoutActive ? "#C2F903" : "#9CA3AF",
+            }}
           >
-            Workout
+            Workouts
           </Link>
 
           <Link
             href="/my-plan"
-            className={`rounded-full px-3 py-2.5 text-sm font-medium transition-colors ${
-              isPlanActive
-                ? "bg-[#18230f] text-[#ccff00]"
-                : "text-[#9ca0aa] hover:text-white"
+            className={`${navItemClass} ${
+              isPlanActive ? "font-bold" : "font-normal"
             }`}
+            style={{
+              backgroundColor: isPlanActive
+                ? "#1A2312"
+                : "transparent",
+              color: isPlanActive ? "#C2F903" : "#9CA3AF",
+            }}
           >
             My Plan
           </Link>
         </nav>
 
-        {/* Plan and Saved counters */}
-        <div className="flex items-center gap-8">
+        {/* Right counters */}
+        <div className="flex items-center gap-8 justify-self-end">
           <Link
             href="/my-plan"
-            className="flex items-center gap-3 text-sm font-medium text-[#d2d3d6]"
+            className="flex items-center gap-3 whitespace-nowrap text-sm font-medium text-[#D1D5DB]"
           >
             <span>Plan</span>
 
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ccff00] text-xs font-bold text-[#0d0f12]">
-              0
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#CCFF00] text-xs font-bold text-[#0D0F12]">
+              {planCount}
             </span>
           </Link>
 
           <Link
             href="/my-plan"
-            className="flex items-center gap-3 text-sm font-medium text-[#9ca0aa]"
+            className="flex items-center gap-3 whitespace-nowrap text-sm font-medium text-[#9CA3AF]"
           >
             <span>Saved</span>
 
-            <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#343842] text-xs font-medium text-[#9ca0aa]">
-              0
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#343842] text-xs font-medium text-[#9CA3AF]">
+              {savedCount}
             </span>
           </Link>
         </div>

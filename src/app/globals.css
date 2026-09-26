@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d0f12;
-  --surface: #15171d;
+  --background: #0c0d10;
+  --surface: #151921;
   --foreground: #f5f5f5;
-  --muted: #8a8b8e;
-  --border: #272b32;
+  --muted: #9ca3af;
+  --border: #232732;
   --accent: #ccff00;
-  --accent-foreground: #0f1115;
+  --accent-foreground: #090a0d;
 }
 
 * {
@@ -16,13 +16,15 @@
 
 html {
   scroll-behavior: smooth;
-  background: var(--background);
+  scrollbar-gutter: stable;
+  overflow-y: scroll;
+  background: #0c0d10;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--background);
+  background: #0c0d10;
   color: var(--foreground);
   font-family: var(--font-inter), Arial, sans-serif;
 }

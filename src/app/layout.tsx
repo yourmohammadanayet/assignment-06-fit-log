@@ -1,4 +1,7 @@
+import type { ReactNode } from "react";
 import { Inter, Oswald } from "next/font/google";
+import Footer from "../components/Footer";
+import Providers from "../components/Providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -19,10 +22,32 @@ export const metadata = {
     "A focused workout library and daily training planner for tracking every set.",
 };
 
-export default function RootLayout({ children }) {
+type RootLayoutProps = {
+  children: ReactNode;
+};
+
+export default function RootLayout({
+  children,
+}: RootLayoutProps) {
   return (
-    <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${inter.variable} ${oswald.variable}`}
+      data-scroll-behavior="smooth"
+    >
+      <body className="m-0 min-h-screen bg-[#0B0D10]">
+        <Providers>
+          <div className="flex min-h-screen flex-col bg-[#0B0D10]">
+            {/* Page content */}
+            <div className="flex flex-1 flex-col bg-[#0B0D10]">
+              {children}
+            </div>
+
+            {/* Global footer */}
+            <Footer />
+          </div>
+        </Providers>
+      </body>
     </html>
   );
 }

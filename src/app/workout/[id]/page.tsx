@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Navbar from "../../../components/Navbar";
+import WorkoutActions from "../../../components/WorkoutActions";
 import type { Workout } from "../../../types/workout";
 
 type WorkoutDetailsPageProps = {
@@ -27,6 +28,7 @@ export default async function WorkoutDetailsPage({
   params,
 }: WorkoutDetailsPageProps) {
   const { id } = await params;
+
   const workout = await getWorkout(id);
 
   if (!workout) {
@@ -34,76 +36,98 @@ export default async function WorkoutDetailsPage({
   }
 
   const specs = [
-    { label: "Equipment", value: workout.equipment },
-    { label: "Difficulty", value: workout.difficulty },
-    { label: "Sets", value: workout.sets },
-    { label: "Reps", value: workout.reps },
-    { label: "Duration", value: `${workout.duration} min` },
-    { label: "Calories", value: `${workout.caloriesBurned} kcal` },
-    { label: "Rating", value: workout.rating },
+    {
+      label: "Equipment",
+      value: workout.equipment,
+    },
+    {
+      label: "Difficulty",
+      value: workout.difficulty,
+    },
+    {
+      label: "Sets",
+      value: workout.sets,
+    },
+    {
+      label: "Reps",
+      value: workout.reps,
+    },
+    {
+      label: "Duration",
+      value: `${workout.duration} min`,
+    },
+    {
+      label: "Calories",
+      value: `${workout.caloriesBurned} kcal`,
+    },
+    {
+      label: "Rating",
+      value: workout.rating,
+    },
   ];
 
   return (
     <>
       <Navbar />
 
-      <main className="bg-[#0d0f12] py-10">
+      <main className="bg-[#0F1115] py-10 sm:py-12">
         <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <div className="overflow-hidden rounded-[16px] border border-[#262a33] bg-[#15171d]">
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">
+            {/* Left image */}
+            <div className="overflow-hidden rounded-[16px] bg-[#151922]">
               <img
                 src={workout.image}
                 alt={workout.name}
-                className="h-full min-h-[520px] w-full object-cover"
+                className="h-[520px] w-full object-cover sm:h-[620px] lg:h-[700px]"
               />
             </div>
 
-            <div>
-              <div className="flex flex-wrap gap-2">
+            {/* Right content */}
+            <div className="flex flex-col">
+              {/* Workout title */}
+              <h1
+                className="text-[38px] font-bold uppercase leading-[1.05] tracking-[0.01em] text-white sm:text-[44px]"
+                style={{
+                  fontFamily: "var(--font-oswald)",
+                }}
+              >
+                {workout.name}
+              </h1>
+
+              {/* Description */}
+              <p className="mt-4 max-w-[570px] text-[15px] leading-[24px] text-[#9CA3AF]">
+                {workout.description}
+              </p>
+
+              {/* Muscle group tags */}
+              <div className="mt-5 flex flex-wrap gap-3">
                 {workout.muscleGroups.map((group) => (
                   <span
                     key={group}
-                    className="rounded-full border border-[#343842] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#ccff00]"
+                    className="inline-flex items-center justify-center rounded-full bg-[#CCFF00] px-[14px] py-[5px] text-[11px] font-bold uppercase leading-[16.5px] tracking-[0.55px] text-black"
                   >
                     {group}
                   </span>
                 ))}
               </div>
 
-              <h1
-                className="mt-5 text-[46px] font-bold uppercase leading-[0.95] text-white sm:text-[54px]"
-                style={{ fontFamily: "var(--font-oswald)" }}
-              >
-                {workout.name}
-              </h1>
-
-              <p className="mt-5 text-sm leading-6 text-[#9ca0aa]">
-                {workout.description}
-              </p>
-
-              <section className="mt-8">
-                <h2
-                  className="mb-4 text-[24px] font-bold uppercase text-white"
-                  style={{ fontFamily: "var(--font-oswald)" }}
-                >
-                  Key Specs
-                </h2>
-
-                <div className="overflow-hidden rounded-[12px] border border-[#262a33] bg-[#15171d]">
+              {/* Key specs */}
+              <section className="mt-7">
+                <div className="overflow-hidden rounded-[16px] border border-[#262C37] bg-[#151922]">
                   {specs.map((spec, index) => (
                     <div
                       key={spec.label}
-                      className={`flex items-center justify-between gap-4 px-5 py-3 ${
+                      className={`flex min-h-[58px] items-center justify-between gap-5 px-6 ${
                         index !== specs.length - 1
-                          ? "border-b border-[#262a33]"
+                          ? "border-b border-[#252B35]"
                           : ""
                       }`}
                     >
-                      <span className="text-xs font-semibold uppercase tracking-[0.08em] text-[#777b84]">
+                      <span className="text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#9CA3AF]">
                         {spec.label}
                       </span>
 
-                      <span className="text-sm font-medium text-[#e4e4e6]">
+                      <span className="text-right text-[14px] font-medium leading-5 text-[#E5E7EB]">
                         {spec.value}
                       </span>
                     </div>
@@ -111,22 +135,20 @@ export default async function WorkoutDetailsPage({
                 </div>
               </section>
 
+              {/* Instructions */}
               <section className="mt-8">
-                <h2
-                  className="mb-5 text-[24px] font-bold uppercase text-white"
-                  style={{ fontFamily: "var(--font-oswald)" }}
-                >
+                <h2 className="text-[18px] font-bold uppercase leading-7 text-white">
                   Instructions
                 </h2>
 
-                <ol className="space-y-4">
+                <ol className="mt-5 space-y-4">
                   {workout.instructions.map((instruction, index) => (
                     <li
                       key={instruction}
-                      className="flex items-start gap-4 text-sm leading-6 text-[#a0a3aa]"
+                      className="flex items-start gap-3 text-[14px] leading-[22px] text-[#D1D5DB]"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#343842] text-xs font-bold text-[#ccff00]">
-                        {index + 1}
+                      <span className="shrink-0 text-[#9CA3AF]">
+                        {index + 1}.
                       </span>
 
                       <span>{instruction}</span>
@@ -135,49 +157,8 @@ export default async function WorkoutDetailsPage({
                 </ol>
               </section>
 
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[5px] bg-[#ccff00] px-6 text-xs font-bold uppercase text-black"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect x="3" y="5" width="18" height="16" rx="2" />
-                    <path d="M16 3v4M8 3v4M3 10h18" />
-                    <path d="M12 13v5M9.5 15.5h5" />
-                  </svg>
-
-                  <span>Add to today&apos;s plan</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[5px] border border-[#343842] px-6 text-xs font-bold uppercase text-white"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M6 4.5A2.5 2.5 0 0 1 8.5 2h7A2.5 2.5 0 0 1 18 4.5V22l-6-4-6 4V4.5Z" />
-                  </svg>
-
-                  <span>Save for later</span>
-                </button>
-              </div>
+              {/* Action buttons */}
+              <WorkoutActions workout={workout} />
             </div>
           </div>
         </div>

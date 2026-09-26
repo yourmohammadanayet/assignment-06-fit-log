@@ -9,9 +9,10 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
   return (
     <Link
       href={`/workout/${workout.id}`}
-      className="group overflow-hidden rounded-[14px] border border-[#262a33] bg-[#15171d] transition duration-200 hover:-translate-y-1 hover:border-[#3a3f49]"
+      className="group overflow-hidden rounded-[14px] border border-[#262B35] bg-[#15181F] transition duration-200 hover:-translate-y-1 hover:border-[#3A404B]"
     >
-      <div className="aspect-[16/10] overflow-hidden bg-[#1a1d22]">
+      {/* Workout image */}
+      <div className="aspect-[16/10] overflow-hidden bg-[#1A1D22]">
         <img
           src={workout.image}
           alt={workout.name}
@@ -19,36 +20,72 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
         />
       </div>
 
+      {/* Card content */}
       <div className="p-5">
+        {/* Muscle tags */}
         <div className="mb-4 flex flex-wrap gap-2">
           {workout.muscleGroups.map((group) => (
             <span
               key={group}
-              className="rounded-full border border-[#343842] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#ccff00]"
+              className="inline-flex items-center justify-center rounded-full bg-[#CCFF00] px-3 py-1"
+              style={{
+                color: "#000000",
+                fontSize: "11px",
+                fontFamily: "var(--font-inter)",
+                fontWeight: 700,
+                lineHeight: "16.5px",
+                letterSpacing: "0.55px",
+                textTransform: "uppercase",
+              }}
             >
               {group}
             </span>
           ))}
         </div>
 
+        {/* Workout name */}
         <h3
-          className="text-[24px] font-bold uppercase leading-tight text-white"
-          style={{ fontFamily: "var(--font-oswald)" }}
+          style={{
+            color: "#FFFFFF",
+            fontSize: "18px",
+            fontFamily: "var(--font-oswald)",
+            fontWeight: 700,
+            lineHeight: "28px",
+            letterSpacing: "0.45px",
+            textTransform: "uppercase",
+          }}
         >
           {workout.name}
         </h3>
 
-        <p className="mt-2 text-sm text-[#92969f]">{workout.equipment}</p>
+        {/* Equipment */}
+        <p
+          className="mt-1"
+          style={{
+            color: "#9CA3AF",
+            fontSize: "12px",
+            fontFamily: "var(--font-inter)",
+            fontWeight: 400,
+            lineHeight: "16px",
+          }}
+        >
+          {workout.equipment}
+        </p>
 
-        <div className="mt-5 flex items-center gap-5 border-t border-[#262a33] pt-4 text-xs text-[#9ca0aa]">
-          <div className="flex items-center gap-1.5">
+        {/* Divider */}
+        <div className="mt-5 border-t border-[#232833]" />
+
+        {/* Stats */}
+        <div className="mt-4 flex items-center gap-6">
+          {/* Duration */}
+          <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
-              className="h-4 w-4 text-[#ccff00]"
+              className="h-[18px] w-[18px] text-[#9CA3AF]"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.8"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
@@ -56,37 +93,68 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
               <path d="M12 7v5l3 2" />
             </svg>
 
-            <span>{workout.duration} min</span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              className="h-4 w-4 text-[#ccff00]"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <span
+              style={{
+                color: "#9CA3AF",
+                fontSize: "12px",
+                fontFamily: "var(--font-inter)",
+                fontWeight: 400,
+                lineHeight: "16px",
+              }}
             >
-              <path d="M13 3s1 3-2 6c-2 2-3 4-3 6a4 4 0 0 0 8 0c0-2-1-4-3-6 0 2-1 3-2 4" />
-            </svg>
-
-            <span>{workout.caloriesBurned} kcal</span>
+              {workout.duration} min
+            </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          {/* Calories */}
+          <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
               aria-hidden="true"
-              className="h-4 w-4 text-[#ccff00]"
+              className="h-[18px] w-[18px] text-[#9CA3AF]"
               fill="currentColor"
             >
-              <path d="m12 2.8 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 16.83l-5.5 2.89 1.05-6.12L3.1 9.27l6.15-.9L12 2.8Z" />
+              <path d="M13.8 2.5c.3 2.7-.7 4.4-2 5.9-1.1 1.5-2.1 2.8-1.5 4.8.4-1.1 1.1-1.9 2-2.7 1.4 1.5 2.4 3 2.4 5 0 2.4-1.7 4.5-4.4 4.5-3.2 0-5.3-2.4-5.3-5.5 0-3.5 2.2-6.1 4.8-8.7.1 1.6.5 2.7 1.1 3.5.6-2.2 1.3-4.4 2.9-6.8Z" />
             </svg>
 
-            <span>{workout.rating}</span>
+            <span
+              style={{
+                color: "#9CA3AF",
+                fontSize: "12px",
+                fontFamily: "var(--font-inter)",
+                fontWeight: 400,
+                lineHeight: "16px",
+              }}
+            >
+              {workout.caloriesBurned} kcal
+            </span>
+          </div>
+
+          {/* Rating */}
+          <div className="flex items-center gap-2">
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="h-[18px] w-[18px] text-[#9CA3AF]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            >
+              <path d="m12 2.8 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9L6.4 20l1.1-6.2L3 9.4l6.2-.9L12 2.8Z" />
+            </svg>
+
+            <span
+              style={{
+                color: "#9CA3AF",
+                fontSize: "12px",
+                fontFamily: "var(--font-inter)",
+                fontWeight: 400,
+                lineHeight: "16px",
+              }}
+            >
+              {workout.rating}
+            </span>
           </div>
         </div>
       </div>
