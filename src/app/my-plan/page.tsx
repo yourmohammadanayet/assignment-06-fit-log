@@ -804,19 +804,23 @@ function WorkoutRow({
         </div>
 
         <div className="min-w-0 flex-1">
-          <h2
-            className={`text-[20px] font-bold uppercase leading-tight text-white ${
-              completed
-                ? "line-through opacity-50"
-                : ""
-            }`}
-            style={{
-              fontFamily:
-                "var(--font-oswald)",
-            }}
-          >
-            {name}
-          </h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2
+              className="text-[20px] font-bold uppercase leading-tight text-white"
+              style={{
+                fontFamily:
+                  "var(--font-oswald)",
+              }}
+            >
+              {name}
+            </h2>
+
+            {completed && (
+              <span className="inline-flex items-center rounded-full border border-[#5F7500] bg-[#263000] px-2 py-[3px] text-[10px] font-bold uppercase tracking-[0.06em] text-[#CCFF00]">
+                Done
+              </span>
+            )}
+          </div>
 
           <p className="mt-[3px] text-[13px] text-[#969BA5]">
             {equipment}
