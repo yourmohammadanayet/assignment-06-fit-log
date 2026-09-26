@@ -42,7 +42,7 @@ export default function WorkoutActions({
 
   return (
     <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-      {/* Add to plan */}
+
       <button
         type="button"
         onClick={handleAddToPlan}
@@ -72,7 +72,7 @@ export default function WorkoutActions({
         <span>Add to today&apos;s plan</span>
       </button>
 
-      {/* Save */}
+
       <button
         type="button"
         onClick={handleSaveWorkout}

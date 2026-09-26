@@ -28,46 +28,75 @@ type FitLogContextType = {
   markAsDone: (id: number) => void;
 };
 
-const FitLogContext = createContext<FitLogContextType | undefined>(undefined);
+const FitLogContext = createContext<FitLogContextType | undefined>(
+  undefined
+);
 
 type FitLogProviderProps = {
   children: ReactNode;
 };
 
-export function FitLogProvider({ children }: FitLogProviderProps) {
+export function FitLogProvider({
+  children,
+}: FitLogProviderProps) {
   const [plan, setPlan] = useState<PlannedWorkout[]>([]);
   const [saved, setSaved] = useState<Workout[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const storedPlan = localStorage.getItem("fitlog-plan");
-    const storedSaved = localStorage.getItem("fitlog-saved");
+    const frame = window.requestAnimationFrame(() => {
+      const storedPlan = localStorage.getItem("fitlog-plan");
+      const storedSaved = localStorage.getItem("fitlog-saved");
 
-    if (storedPlan) {
-      setPlan(JSON.parse(storedPlan));
-    }
+      try {
+        if (storedPlan) {
+          setPlan(JSON.parse(storedPlan));
+        }
 
-    if (storedSaved) {
-      setSaved(JSON.parse(storedSaved));
-    }
+        if (storedSaved) {
+          setSaved(JSON.parse(storedSaved));
+        }
+      } catch {
+        localStorage.removeItem("fitlog-plan");
+        localStorage.removeItem("fitlog-saved");
+      }
 
-    setLoaded(true);
+      setLoaded(true);
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded) {
+      return;
+    }
 
-    localStorage.setItem("fitlog-plan", JSON.stringify(plan));
+    localStorage.setItem(
+      "fitlog-plan",
+      JSON.stringify(plan)
+    );
   }, [plan, loaded]);
 
   useEffect(() => {
-    if (!loaded) return;
+    if (!loaded) {
+      return;
+    }
 
-    localStorage.setItem("fitlog-saved", JSON.stringify(saved));
+    localStorage.setItem(
+      "fitlog-saved",
+      JSON.stringify(saved)
+    );
   }, [saved, loaded]);
 
-  function addToPlan(workout: Workout): AddToPlanResult {
-    const alreadyAdded = plan.some((item) => item.id === workout.id);
+  function addToPlan(
+    workout: Workout
+  ): AddToPlanResult {
+    const alreadyAdded = plan.some(
+      (item) => item.id === workout.id
+    );
 
     if (alreadyAdded) {
       return "exists";
@@ -88,27 +117,38 @@ export function FitLogProvider({ children }: FitLogProviderProps) {
     return "added";
   }
 
-  function saveWorkout(workout: Workout): SaveWorkoutResult {
-    const alreadySaved = saved.some((item) => item.id === workout.id);
+  function saveWorkout(
+    workout: Workout
+  ): SaveWorkoutResult {
+    const alreadySaved = saved.some(
+      (item) => item.id === workout.id
+    );
 
     if (alreadySaved) {
       return "exists";
     }
 
-    setSaved((currentSaved) => [...currentSaved, workout]);
+    setSaved((currentSaved) => [
+      ...currentSaved,
+      workout,
+    ]);
 
     return "saved";
   }
 
   function removeFromPlan(id: number) {
     setPlan((currentPlan) =>
-      currentPlan.filter((workout) => workout.id !== id)
+      currentPlan.filter(
+        (workout) => workout.id !== id
+      )
     );
   }
 
   function removeFromSaved(id: number) {
     setSaved((currentSaved) =>
-      currentSaved.filter((workout) => workout.id !== id)
+      currentSaved.filter(
+        (workout) => workout.id !== id
+      )
     );
   }
 
@@ -148,7 +188,9 @@ export function useFitLog() {
   const context = useContext(FitLogContext);
 
   if (!context) {
-    throw new Error("useFitLog must be used inside FitLogProvider");
+    throw new Error(
+      "useFitLog must be used inside FitLogProvider"
+    );
   }
 
   return context;

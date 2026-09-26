@@ -30,9 +30,9 @@ export default function Navbar() {
     >
       {/* Mobile + Tablet */}
       <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:hidden">
-        {/* Top row */}
+
         <div className="flex min-h-[64px] items-center justify-between gap-4">
-          {/* Branding */}
+
           <Link
             href="/"
             className="flex shrink-0 items-center gap-2"
@@ -56,7 +56,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Counters */}
+
           <div className="flex min-w-0 items-center gap-4">
             <Link
               href="/my-plan#plan"
@@ -84,7 +84,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Bottom navigation */}
+
         <nav className="grid grid-cols-2 gap-2 border-t border-[#1A1C22] py-2">
           <Link
             href="/"
@@ -124,7 +124,7 @@ export default function Navbar() {
 
       {/* Desktop */}
       <div className="mx-auto hidden min-h-[72px] w-full max-w-[1180px] grid-cols-[1fr_auto_1fr] items-center px-8 lg:grid">
-        {/* Left branding */}
+
         <div className="justify-self-start">
           <Link
             href="/"
@@ -150,7 +150,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Center navigation */}
+
         <nav className="flex items-center gap-4 justify-self-center">
           <Link
             href="/"
@@ -187,7 +187,7 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        {/* Right counters */}
+
         <div className="flex items-center gap-8 justify-self-end">
           <Link
             href="/my-plan#plan"

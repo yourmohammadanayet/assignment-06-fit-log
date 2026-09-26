@@ -11,7 +11,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
       href={`/workout/${workout.id}`}
       className="group overflow-hidden rounded-[14px] border border-[#262B35] bg-[#15181F] transition duration-200 hover:-translate-y-1 hover:border-[#3A404B]"
     >
-      {/* Workout image */}
+
       <div className="aspect-[16/10] overflow-hidden bg-[#1A1D22]">
         <img
           src={workout.image}
@@ -20,9 +20,9 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
         />
       </div>
 
-      {/* Card content */}
+
       <div className="p-5">
-        {/* Muscle tags */}
+
         <div className="mb-4 flex flex-wrap gap-2">
           {workout.muscleGroups.map((group) => (
             <span
@@ -43,7 +43,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
           ))}
         </div>
 
-        {/* Workout name */}
+
         <h3
           style={{
             color: "#FFFFFF",
@@ -58,7 +58,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
           {workout.name}
         </h3>
 
-        {/* Equipment */}
+
         <p
           className="mt-1"
           style={{
@@ -72,12 +72,12 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
           {workout.equipment}
         </p>
 
-        {/* Divider */}
+
         <div className="mt-5 border-t border-[#232833]" />
 
-        {/* Stats */}
+
         <div className="mt-4 flex items-center gap-6">
-          {/* Duration */}
+
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
@@ -106,7 +106,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
             </span>
           </div>
 
-          {/* Calories */}
+
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"
@@ -130,7 +130,7 @@ export default function WorkoutCard({ workout }: WorkoutCardProps) {
             </span>
           </div>
 
-          {/* Rating */}
+
           <div className="flex items-center gap-2">
             <svg
               viewBox="0 0 24 24"

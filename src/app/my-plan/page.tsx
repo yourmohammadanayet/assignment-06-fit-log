@@ -50,8 +50,10 @@ export default function MyPlanPage() {
       }
     }
 
-    updateTabFromHash();
-    setMounted(true);
+    const frame = window.requestAnimationFrame(() => {
+      updateTabFromHash();
+      setMounted(true);
+    });
 
     window.addEventListener(
       "hashchange",
@@ -59,6 +61,8 @@ export default function MyPlanPage() {
     );
 
     return () => {
+      window.cancelAnimationFrame(frame);
+
       window.removeEventListener(
         "hashchange",
         updateTabFromHash

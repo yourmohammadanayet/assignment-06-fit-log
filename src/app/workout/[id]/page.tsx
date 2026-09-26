@@ -84,7 +84,7 @@ export default async function WorkoutDetailsPage({
 
             {/* Right content */}
             <div className="flex flex-col">
-              {/* Workout title */}
+
               <h1
                 className="text-[38px] font-bold uppercase leading-[1.05] tracking-[0.01em] text-white sm:text-[44px]"
                 style={{
@@ -94,12 +94,12 @@ export default async function WorkoutDetailsPage({
                 {workout.name}
               </h1>
 
-              {/* Description */}
+
               <p className="mt-4 max-w-[570px] text-[15px] leading-[24px] text-[#9CA3AF]">
                 {workout.description}
               </p>
 
-              {/* Muscle group tags */}
+
               <div className="mt-5 flex flex-wrap gap-3">
                 {workout.muscleGroups.map((group) => (
                   <span
