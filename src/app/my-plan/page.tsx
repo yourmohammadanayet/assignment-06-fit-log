@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import toast from "react-hot-toast";
 import Navbar from "../../components/Navbar";
 import { useFitLog } from "../../context/FitLogContext";
@@ -18,9 +23,23 @@ export default function MyPlanPage() {
     markAsDone,
   } = useFitLog();
 
-  const [activeTab, setActiveTab] = useState<TabName>("plan");
-  const [sortBy, setSortBy] = useState<SortOption>("duration");
-  const [mounted, setMounted] = useState(false);
+  const [activeTab, setActiveTab] =
+    useState<TabName>("plan");
+
+  const [sortBy, setSortBy] =
+    useState<SortOption>("duration");
+
+  const [searchOpen, setSearchOpen] =
+    useState(false);
+
+  const [searchTerm, setSearchTerm] =
+    useState("");
+
+  const [mounted, setMounted] =
+    useState(false);
+
+  const mobileSearchInputRef =
+    useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     function updateTabFromHash() {
@@ -34,44 +53,78 @@ export default function MyPlanPage() {
     updateTabFromHash();
     setMounted(true);
 
-    window.addEventListener("hashchange", updateTabFromHash);
+    window.addEventListener(
+      "hashchange",
+      updateTabFromHash
+    );
 
     return () => {
-      window.removeEventListener("hashchange", updateTabFromHash);
+      window.removeEventListener(
+        "hashchange",
+        updateTabFromHash
+      );
     };
   }, []);
 
-  const totalMinutes = useMemo(() => {
-    return plan.reduce(
-      (total, workout) => total + workout.duration,
-      0
-    );
-  }, [plan]);
+  useEffect(() => {
+    if (searchOpen) {
+      mobileSearchInputRef.current?.focus();
+    }
+  }, [searchOpen]);
 
-  const totalCalories = useMemo(() => {
-    return plan.reduce(
-      (total, workout) => total + workout.caloriesBurned,
+  const summaryExercises = useMemo(() => {
+    return activeTab === "plan"
+      ? plan.length
+      : saved.length;
+  }, [activeTab, plan, saved]);
+
+  const summaryMinutes = useMemo(() => {
+    const workouts =
+      activeTab === "plan"
+        ? plan
+        : saved;
+
+    return workouts.reduce(
+      (total, workout) =>
+        total + workout.duration,
       0
     );
-  }, [plan]);
+  }, [activeTab, plan, saved]);
+
+  const summaryCalories = useMemo(() => {
+    const workouts =
+      activeTab === "plan"
+        ? plan
+        : saved;
+
+    return workouts.reduce(
+      (total, workout) =>
+        total + workout.caloriesBurned,
+      0
+    );
+  }, [activeTab, plan, saved]);
 
   const sortedPlan = useMemo(() => {
     const sorted = [...plan];
 
     if (sortBy === "duration") {
       return sorted.sort(
-        (a, b) => a.duration - b.duration
+        (a, b) =>
+          a.duration - b.duration
       );
     }
 
     if (sortBy === "calories") {
       return sorted.sort(
-        (a, b) => a.caloriesBurned - b.caloriesBurned
+        (a, b) =>
+          a.caloriesBurned -
+          b.caloriesBurned
       );
     }
 
     return sorted.sort(
-      (a, b) => b.rating - a.rating
+      (a, b) =>
+        b.rating - a.rating
     );
   }, [plan, sortBy]);
 
@@ -80,25 +133,103 @@ export default function MyPlanPage() {
 
     if (sortBy === "duration") {
       return sorted.sort(
-        (a, b) => a.duration - b.duration
+        (a, b) =>
+          a.duration - b.duration
       );
     }
 
     if (sortBy === "calories") {
       return sorted.sort(
-        (a, b) => a.caloriesBurned - b.caloriesBurned
+        (a, b) =>
+          a.caloriesBurned -
+          b.caloriesBurned
       );
     }
 
     return sorted.sort(
-      (a, b) => b.rating - a.rating
+      (a, b) =>
+        b.rating - a.rating
     );
   }, [saved, sortBy]);
 
+  const filteredPlan = useMemo(() => {
+    const query = searchTerm
+      .trim()
+      .toLowerCase();
+
+    if (!query) {
+      return sortedPlan;
+    }
+
+    return sortedPlan.filter((workout) => {
+      const matchesName =
+        workout.name
+          .toLowerCase()
+          .includes(query);
+
+      const matchesEquipment =
+        workout.equipment
+          .toLowerCase()
+          .includes(query);
+
+      const matchesMuscleGroup =
+        workout.muscleGroups.some((group) =>
+          group
+            .toLowerCase()
+            .includes(query)
+        );
+
+      return (
+        matchesName ||
+        matchesEquipment ||
+        matchesMuscleGroup
+      );
+    });
+  }, [sortedPlan, searchTerm]);
+
+  const filteredSaved = useMemo(() => {
+    const query = searchTerm
+      .trim()
+      .toLowerCase();
+
+    if (!query) {
+      return sortedSaved;
+    }
+
+    return sortedSaved.filter((workout) => {
+      const matchesName =
+        workout.name
+          .toLowerCase()
+          .includes(query);
+
+      const matchesEquipment =
+        workout.equipment
+          .toLowerCase()
+          .includes(query);
+
+      const matchesMuscleGroup =
+        workout.muscleGroups.some((group) =>
+          group
+            .toLowerCase()
+            .includes(query)
+        );
+
+      return (
+        matchesName ||
+        matchesEquipment ||
+        matchesMuscleGroup
+      );
+    });
+  }, [sortedSaved, searchTerm]);
+
   function changeTab(tab: TabName) {
     setActiveTab(tab);
+    setSearchTerm("");
 
-    const hash = tab === "saved" ? "#saved" : "#plan";
+    const hash =
+      tab === "saved"
+        ? "#saved"
+        : "#plan";
 
     window.history.replaceState(
       null,
@@ -107,12 +238,26 @@ export default function MyPlanPage() {
     );
   }
 
-  function handleDone(id: number) {
-    markAsDone(id);
-    toast.success("Workout marked as done");
+  function openSearch() {
+    setSearchOpen(true);
   }
 
-  function showRemoveToast(message: string) {
+  function closeSearch() {
+    setSearchOpen(false);
+    setSearchTerm("");
+  }
+
+  function handleDone(id: number) {
+    markAsDone(id);
+
+    toast.success(
+      "Workout marked as done"
+    );
+  }
+
+  function showRemoveToast(
+    message: string
+  ) {
     toast(message, {
       icon: "✕",
       duration: 2500,
@@ -130,60 +275,69 @@ export default function MyPlanPage() {
 
   function handleRemovePlan(id: number) {
     removeFromPlan(id);
-    showRemoveToast("Removed from today's plan");
+
+    showRemoveToast(
+      "Removed from today's plan"
+    );
   }
 
   function handleRemoveSaved(id: number) {
     removeFromSaved(id);
-    showRemoveToast("Removed from saved workouts");
+
+    showRemoveToast(
+      "Removed from saved workouts"
+    );
   }
 
   return (
     <>
       <Navbar />
 
-      <main className="min-h-[760px] bg-[#0C0D10] py-11">
+      <main className="min-h-[760px] bg-[#0C0D10] py-9 sm:py-11">
         <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8">
-          {/* Page heading */}
           <h1
-            className="text-[42px] font-bold uppercase leading-none text-white"
-            style={{ fontFamily: "var(--font-oswald)" }}
+            className="text-[38px] font-bold uppercase leading-none text-white sm:text-[42px]"
+            style={{
+              fontFamily:
+                "var(--font-oswald)",
+            }}
           >
             My Plan
           </h1>
 
-          <p className="mt-3 text-sm text-[#8992A0]">
-            Cap of five lifts for today. Finish them, then load more.
+          <p className="mt-3 max-w-[620px] text-sm leading-6 text-[#8992A0]">
+            Cap of five lifts for today.
+            Finish them, then load more.
           </p>
 
-          {/* Metrics */}
           <div className="mt-8 grid overflow-hidden rounded-[16px] border border-[#21252F] bg-[#14161D] sm:grid-cols-3">
             <MetricCard
               label="Exercises"
-              value={plan.length}
+              value={summaryExercises}
               accent
             />
 
             <MetricCard
               label="Minutes"
-              value={totalMinutes}
+              value={summaryMinutes}
               divider
             />
 
             <MetricCard
               label="Calories"
-              value={totalCalories}
+              value={summaryCalories}
               divider
             />
           </div>
 
-          {/* Tabs and Sort */}
-          <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-9 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             {/* Tabs */}
             <div className="inline-flex h-[40px] w-fit items-center gap-[4px] rounded-[12px] border border-[#232732] bg-[#151921] p-[4px]">
               <button
                 type="button"
-                onClick={() => changeTab("plan")}
+                onClick={() =>
+                  changeTab("plan")
+                }
                 className={`flex h-[30px] items-center justify-center whitespace-nowrap rounded-[8px] border px-[16px] py-[6px] text-[12px] leading-[16px] transition-colors ${
                   activeTab === "plan"
                     ? "border-[#2B303D] bg-[#1F242D] font-bold text-[#CCFF00]"
@@ -195,7 +349,9 @@ export default function MyPlanPage() {
 
               <button
                 type="button"
-                onClick={() => changeTab("saved")}
+                onClick={() =>
+                  changeTab("saved")
+                }
                 className={`flex h-[30px] items-center justify-center whitespace-nowrap rounded-[8px] border px-[16px] py-[6px] text-[12px] leading-[16px] transition-colors ${
                   activeTab === "saved"
                     ? "border-[#2B303D] bg-[#1F242D] font-bold text-[#CCFF00]"
@@ -206,22 +362,247 @@ export default function MyPlanPage() {
               </button>
             </div>
 
-            {/* Sort */}
-            <div className="flex items-center gap-3">
+            {/* Mobile + Tablet controls */}
+            <div className="flex w-full min-w-0 items-center gap-3 lg:hidden">
+              <div
+                className={
+                  searchOpen
+                    ? "min-w-0 flex-1"
+                    : "shrink-0"
+                }
+              >
+                {!searchOpen ? (
+                  <button
+                    type="button"
+                    onClick={openSearch}
+                    aria-label="Search workouts"
+                    className="inline-flex h-[40px] items-center justify-center gap-2 rounded-[8px] border border-[#2B303D] bg-[#151921] px-4 text-[12px] font-medium text-[#C1C6CF] transition-colors hover:border-[#4A5260] hover:text-white"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-[16px] w-[16px]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                      />
+
+                      <path d="m20 20-3.5-3.5" />
+                    </svg>
+
+                    <span>
+                      Search
+                    </span>
+                  </button>
+                ) : (
+                  <div className="relative w-full">
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="pointer-events-none absolute left-3 top-1/2 h-[16px] w-[16px] -translate-y-1/2 text-[#7F8794]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <circle
+                        cx="11"
+                        cy="11"
+                        r="7"
+                      />
+
+                      <path d="m20 20-3.5-3.5" />
+                    </svg>
+
+                    <input
+                      ref={
+                        mobileSearchInputRef
+                      }
+                      type="text"
+                      value={searchTerm}
+                      onChange={(event) =>
+                        setSearchTerm(
+                          event.target.value
+                        )
+                      }
+                      onKeyDown={(event) => {
+                        if (
+                          event.key === "Escape"
+                        ) {
+                          closeSearch();
+                        }
+                      }}
+                      placeholder={
+                        activeTab === "plan"
+                          ? "Search plan..."
+                          : "Search saved..."
+                      }
+                      autoComplete="off"
+                      aria-label="Search workouts"
+                      className="h-[40px] w-full rounded-[8px] border border-[#CCFF00] bg-[#151921] py-2 pl-10 pr-10 text-[12px] text-white outline-none placeholder:text-[#686F7B]"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={closeSearch}
+                      aria-label="Close search"
+                      title="Close search"
+                      className="absolute right-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[#7F8794] transition-colors hover:text-white"
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-[15px] w-[15px]"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M6 6l12 12M18 6 6 18" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="ml-auto flex shrink-0 items-center gap-2">
+                <label
+                  htmlFor="plan-sort-mobile"
+                  className={`whitespace-nowrap text-[12px] font-medium text-[#9CA3AF] ${
+                    searchOpen
+                      ? "hidden sm:block"
+                      : "block"
+                  }`}
+                >
+                  Sort By
+                </label>
+
+                <div className="relative">
+                  <select
+                    id="plan-sort-mobile"
+                    value={sortBy}
+                    onChange={(event) =>
+                      setSortBy(
+                        event.target
+                          .value as SortOption
+                      )
+                    }
+                    className="h-[40px] min-w-[120px] cursor-pointer appearance-none rounded-[8px] border border-[#2B303D] bg-[#151921] py-2 pl-3 pr-9 text-[12px] font-medium text-white outline-none transition-colors focus:border-[#CCFF00] sm:min-w-[145px]"
+                  >
+                    <option value="duration">
+                      Duration
+                    </option>
+
+                    <option value="calories">
+                      Calories
+                    </option>
+
+                    <option value="rating">
+                      Rating
+                    </option>
+                  </select>
+
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m7 10 5 5 5-5" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop controls */}
+            <div className="hidden items-center gap-3 lg:flex">
+              <div className="relative w-[280px]">
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 h-[16px] w-[16px] -translate-y-1/2 text-[#7F8794]"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <circle
+                    cx="11"
+                    cy="11"
+                    r="7"
+                  />
+
+                  <path d="m20 20-3.5-3.5" />
+                </svg>
+
+                <input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(event) =>
+                    setSearchTerm(
+                      event.target.value
+                    )
+                  }
+                  placeholder={
+                    activeTab === "plan"
+                      ? "Search today's plan..."
+                      : "Search saved workouts..."
+                  }
+                  autoComplete="off"
+                  aria-label="Search workouts"
+                  className="h-[40px] w-full rounded-[8px] border border-[#2B303D] bg-[#151921] py-2 pl-10 pr-10 text-[12px] text-white outline-none transition-colors placeholder:text-[#686F7B] focus:border-[#CCFF00]"
+                />
+
+                {searchTerm && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSearchTerm("")
+                    }
+                    aria-label="Clear search"
+                    title="Clear search"
+                    className="absolute right-3 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center text-[#7F8794] transition-colors hover:text-white"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-[15px] w-[15px]"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 6l12 12M18 6 6 18" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+
               <label
-                htmlFor="plan-sort"
-                className="text-[12px] font-medium text-[#9CA3AF]"
+                htmlFor="plan-sort-desktop"
+                className="whitespace-nowrap text-[12px] font-medium text-[#9CA3AF]"
               >
                 Sort By
               </label>
 
               <div className="relative">
                 <select
-                  id="plan-sort"
+                  id="plan-sort-desktop"
                   value={sortBy}
                   onChange={(event) =>
                     setSortBy(
-                      event.target.value as SortOption
+                      event.target
+                        .value as SortOption
                     )
                   }
                   className="h-[40px] min-w-[145px] cursor-pointer appearance-none rounded-[8px] border border-[#2B303D] bg-[#151921] py-2 pl-4 pr-10 text-[12px] font-medium text-white outline-none transition-colors focus:border-[#CCFF00]"
@@ -255,7 +636,6 @@ export default function MyPlanPage() {
             </div>
           </div>
 
-          {/* Loading */}
           {!mounted && (
             <div className="flex min-h-[260px] items-center justify-center">
               <div className="flex items-center gap-3 text-sm text-[#9297A1]">
@@ -268,67 +648,108 @@ export default function MyPlanPage() {
             </div>
           )}
 
-          {/* Today's Plan */}
-          {mounted && activeTab === "plan" && (
-            <div className="mt-7">
-              {plan.length === 0 ? (
-                <EmptyState />
-              ) : (
-                <div className="space-y-4">
-                  {sortedPlan.map((workout) => (
-                    <WorkoutRow
-                      key={workout.id}
-                      image={workout.image}
-                      name={workout.name}
-                      equipment={workout.equipment}
-                      duration={workout.duration}
-                      calories={workout.caloriesBurned}
-                      rating={workout.rating}
-                      href={`/workout/${workout.id}`}
-                      completed={workout.completed}
-                      showDoneButton
-                      onDone={() =>
-                        handleDone(workout.id)
-                      }
-                      onRemove={() =>
-                        handleRemovePlan(workout.id)
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {mounted &&
+            activeTab === "plan" && (
+              <div className="mt-7">
+                {plan.length === 0 ? (
+                  <EmptyState />
+                ) : filteredPlan.length ===
+                  0 ? (
+                  <SearchEmptyState
+                    onClear={() =>
+                      setSearchTerm("")
+                    }
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    {filteredPlan.map(
+                      (workout) => (
+                        <WorkoutRow
+                          key={workout.id}
+                          image={workout.image}
+                          name={workout.name}
+                          equipment={
+                            workout.equipment
+                          }
+                          duration={
+                            workout.duration
+                          }
+                          calories={
+                            workout.caloriesBurned
+                          }
+                          rating={
+                            workout.rating
+                          }
+                          href={`/workout/${workout.id}`}
+                          completed={
+                            workout.completed
+                          }
+                          showDoneButton
+                          onDone={() =>
+                            handleDone(
+                              workout.id
+                            )
+                          }
+                          onRemove={() =>
+                            handleRemovePlan(
+                              workout.id
+                            )
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
-          {/* Saved */}
-          {mounted && activeTab === "saved" && (
-            <div className="mt-7">
-              {saved.length === 0 ? (
-                <EmptyState />
-              ) : (
-                <div className="space-y-4">
-                  {sortedSaved.map((workout) => (
-                    <WorkoutRow
-                      key={workout.id}
-                      image={workout.image}
-                      name={workout.name}
-                      equipment={workout.equipment}
-                      duration={workout.duration}
-                      calories={workout.caloriesBurned}
-                      rating={workout.rating}
-                      href={`/workout/${workout.id}`}
-                      completed={false}
-                      showDoneButton={false}
-                      onDone={() => {}}
-                      onRemove={() =>
-                        handleRemoveSaved(workout.id)
-                      }
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {mounted &&
+            activeTab === "saved" && (
+              <div className="mt-7">
+                {saved.length === 0 ? (
+                  <EmptyState />
+                ) : filteredSaved.length ===
+                  0 ? (
+                  <SearchEmptyState
+                    onClear={() =>
+                      setSearchTerm("")
+                    }
+                  />
+                ) : (
+                  <div className="space-y-4">
+                    {filteredSaved.map(
+                      (workout) => (
+                        <WorkoutRow
+                          key={workout.id}
+                          image={workout.image}
+                          name={workout.name}
+                          equipment={
+                            workout.equipment
+                          }
+                          duration={
+                            workout.duration
+                          }
+                          calories={
+                            workout.caloriesBurned
+                          }
+                          rating={
+                            workout.rating
+                          }
+                          href={`/workout/${workout.id}`}
+                          completed={false}
+                          showDoneButton={false}
+                          onRemove={() =>
+                            handleRemoveSaved(
+                              workout.id
+                            )
+                          }
+                        />
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
         </div>
       </main>
     </>
@@ -345,7 +766,7 @@ type WorkoutRowProps = {
   href: string;
   completed: boolean;
   showDoneButton: boolean;
-  onDone: () => void;
+  onDone?: () => void;
   onRemove: () => void;
 };
 
@@ -362,11 +783,15 @@ function WorkoutRow({
   onDone,
   onRemove,
 }: WorkoutRowProps) {
+  const actionLayout =
+    showDoneButton
+      ? "grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)_40px]"
+      : "grid-cols-[minmax(0,1fr)_40px]";
+
   return (
-    <article className="rounded-[14px] border border-[#2B303D] bg-[#15181F] px-4 py-4">
+    <article className="rounded-[14px] border border-[#2B303D] bg-[#15181F] p-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-        {/* Image */}
-        <div className="h-[82px] w-full shrink-0 overflow-hidden rounded-[10px] bg-[#20242C] sm:w-[140px]">
+        <div className="h-[150px] w-full shrink-0 overflow-hidden rounded-[10px] bg-[#20242C] sm:h-[82px] sm:w-[140px]">
           <img
             src={image}
             alt={name}
@@ -374,7 +799,6 @@ function WorkoutRow({
           />
         </div>
 
-        {/* Info */}
         <div className="min-w-0 flex-1">
           <h2
             className={`text-[20px] font-bold uppercase leading-tight text-white ${
@@ -383,7 +807,8 @@ function WorkoutRow({
                 : ""
             }`}
             style={{
-              fontFamily: "var(--font-oswald)",
+              fontFamily:
+                "var(--font-oswald)",
             }}
           >
             {name}
@@ -408,11 +833,12 @@ function WorkoutRow({
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex shrink-0 flex-wrap items-center gap-3 lg:ml-5">
+        <div
+          className={`grid w-full ${actionLayout} items-center gap-2 sm:flex sm:w-auto sm:flex-wrap sm:gap-3 lg:ml-5`}
+        >
           <Link
             href={href}
-            className="inline-flex h-[38px] items-center justify-center rounded-full border border-[#3A414E] px-5 text-[12px] font-medium text-white transition-colors hover:border-[#596270]"
+            className="inline-flex h-[40px] w-full items-center justify-center whitespace-nowrap rounded-[10px] border border-[#3A414E] px-2 text-[11px] font-semibold text-white transition-colors hover:border-[#596270] hover:bg-[#1C2028] sm:w-auto sm:rounded-full sm:px-5 sm:text-[12px]"
           >
             View Details
           </Link>
@@ -422,14 +848,14 @@ function WorkoutRow({
               type="button"
               disabled={completed}
               onClick={onDone}
-              className="inline-flex h-[38px] items-center justify-center gap-2 rounded-full bg-[#CCFF00] px-5 text-[12px] font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-[40px] w-full items-center justify-center gap-[6px] whitespace-nowrap rounded-[10px] bg-[#CCFF00] px-2 text-[11px] font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:rounded-full sm:px-5 sm:text-[12px]"
               style={{
                 color: "#000000",
               }}
             >
               <svg
                 viewBox="0 0 24 24"
-                className="h-[15px] w-[15px]"
+                className="h-[14px] w-[14px] shrink-0"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2.5"
@@ -446,17 +872,16 @@ function WorkoutRow({
             </button>
           )}
 
-          {/* Remove */}
           <button
             type="button"
             onClick={onRemove}
             aria-label={`Remove ${name}`}
             title="Remove workout"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[#3A3034] bg-[#1A1518] text-[#F87171] transition-all hover:border-[#EF4444] hover:bg-[#271719] hover:text-[#FF8A8A]"
+            className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[10px] border border-[#4A3035] bg-[#1C1518] text-[#F87171] transition-colors hover:border-[#EF4444] hover:bg-[#29181C] hover:text-[#FF9A9A] sm:rounded-full"
           >
             <svg
               viewBox="0 0 24 24"
-              className="h-[18px] w-[18px]"
+              className="h-[17px] w-[17px]"
               fill="none"
               stroke="currentColor"
               strokeWidth="2.2"
@@ -502,7 +927,8 @@ function MetricCard({
             : "text-white"
         }`}
         style={{
-          fontFamily: "var(--font-oswald)",
+          fontFamily:
+            "var(--font-oswald)",
         }}
       >
         {value}
@@ -592,13 +1018,14 @@ function EmptyState() {
       <h2
         className="text-[30px] font-bold uppercase text-white"
         style={{
-          fontFamily: "var(--font-oswald)",
+          fontFamily:
+            "var(--font-oswald)",
         }}
       >
         Nothing Here Yet
       </h2>
 
-      <p className="mt-3 text-sm text-[#9297A1]">
+      <p className="mt-3 text-sm leading-6 text-[#9297A1]">
         Browse the library and add a lift to get today moving.
       </p>
 
@@ -611,6 +1038,59 @@ function EmptyState() {
       >
         Go to workouts
       </Link>
+    </div>
+  );
+}
+
+function SearchEmptyState({
+  onClear,
+}: {
+  onClear: () => void;
+}) {
+  return (
+    <div className="flex min-h-[220px] flex-col items-center justify-center rounded-[14px] border border-[#2B303D] bg-[#15181F] px-6 text-center">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full border border-[#343842] bg-[#1A1E25] text-[#9CA3AF]">
+        <svg
+          viewBox="0 0 24 24"
+          className="h-[18px] w-[18px]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <circle
+            cx="11"
+            cy="11"
+            r="7"
+          />
+
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+      </div>
+
+      <h2
+        className="mt-4 text-[24px] font-bold uppercase text-white"
+        style={{
+          fontFamily:
+            "var(--font-oswald)",
+        }}
+      >
+        No Workouts Found
+      </h2>
+
+      <p className="mt-2 text-sm leading-6 text-[#9297A1]">
+        Try another workout name,
+        equipment, or muscle group.
+      </p>
+
+      <button
+        type="button"
+        onClick={onClear}
+        className="mt-5 inline-flex h-[38px] items-center justify-center rounded-full border border-[#3A414E] px-5 text-[12px] font-medium text-white transition-colors hover:border-[#596270]"
+      >
+        Clear Search
+      </button>
     </div>
   );
 }
