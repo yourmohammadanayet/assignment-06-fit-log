@@ -18,14 +18,18 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo.png"
-            alt="FitLog logo"
+            src="/primary-logo.svg"
+            alt="FitLog icon"
             width={30}
             height={30}
             priority
+            className="h-[30px] w-[30px]"
           />
 
-          <span className="font-display text-xl font-bold uppercase tracking-[0.06em] text-white">
+          <span
+            className="text-xl font-bold uppercase tracking-[0.05em] text-white"
+            style={{ fontFamily: "var(--font-oswald)" }}
+          >
             FitLog
           </span>
         </Link>
@@ -36,7 +40,7 @@ export default function Navbar() {
             href="/"
             className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-colors ${
               isWorkoutActive
-                ? "bg-[#18230f] text-[#c7ff00]"
+                ? "bg-[#18230f] text-[#ccff00]"
                 : "text-[#9ca0aa] hover:text-white"
             }`}
           >
@@ -47,7 +51,7 @@ export default function Navbar() {
             href="/my-plan"
             className={`rounded-full px-3 py-2.5 text-sm font-medium transition-colors ${
               isPlanActive
-                ? "bg-[#18230f] text-[#c7ff00]"
+                ? "bg-[#18230f] text-[#ccff00]"
                 : "text-[#9ca0aa] hover:text-white"
             }`}
           >
@@ -63,7 +67,7 @@ export default function Navbar() {
           >
             <span>Plan</span>
 
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#c7ff00] text-xs font-bold text-[#0d0f12]">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ccff00] text-xs font-bold text-[#0d0f12]">
               0
             </span>
           </Link>
