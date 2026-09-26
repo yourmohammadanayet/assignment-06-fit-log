@@ -35,15 +35,13 @@ export default function RootLayout({
       className={`${inter.variable} ${oswald.variable}`}
       data-scroll-behavior="smooth"
     >
-      <body className="m-0 min-h-screen bg-[#0B0D10]">
+      <body className="m-0 min-h-screen bg-[#0C0D10]">
         <Providers>
-          <div className="flex min-h-screen flex-col bg-[#0B0D10]">
-            {/* Page content */}
-            <div className="flex flex-1 flex-col bg-[#0B0D10]">
+          <div className="flex min-h-screen flex-col bg-[#0C0D10]">
+            <div className="flex flex-1 flex-col bg-[#0C0D10]">
               {children}
             </div>
 
-            {/* Global footer */}
             <Footer />
           </div>
         </Providers>

@@ -65,7 +65,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/my-plan"
+            href="/my-plan#plan"
             className={`${navItemClass} ${
               isPlanActive ? "font-bold" : "font-normal"
             }`}
@@ -83,8 +83,9 @@ export default function Navbar() {
         {/* Right counters */}
         <div className="flex items-center gap-8 justify-self-end">
           <Link
-            href="/my-plan"
+            href="/my-plan#plan"
             className="flex items-center gap-3 whitespace-nowrap text-sm font-medium text-[#D1D5DB]"
+            title="Open today's plan"
           >
             <span>Plan</span>
 
@@ -94,8 +95,9 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/my-plan"
+            href="/my-plan#saved"
             className="flex items-center gap-3 whitespace-nowrap text-sm font-medium text-[#9CA3AF]"
+            title="Open saved workouts"
           >
             <span>Saved</span>
 

@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="bg-[#0d0f12] py-10">
+    <section className="bg-[#0C0D10] py-10">
       <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8">
         <div className="grid min-h-[470px] w-full items-center gap-8 rounded-[22px] border border-[#262a33] bg-[#15171d] px-8 py-10 md:grid-cols-[1.2fr_0.8fr] lg:px-14 lg:py-12">
           <div>
@@ -34,13 +34,27 @@ export default function Hero() {
 
             <a
               href="#library"
-              className="mt-7 inline-flex h-[40px] min-w-[180px] items-center justify-center rounded-[5px] px-6 text-xs font-bold uppercase tracking-[0.02em] transition-opacity hover:opacity-90"
+              className="mt-7 inline-flex h-[40px] min-w-[180px] items-center justify-center gap-2 rounded-[5px] px-6 text-xs font-bold uppercase tracking-[0.02em] transition-opacity hover:opacity-90"
               style={{
                 backgroundColor: "#ccff00",
-                color: "#0b0d0f",
+                color: "#000000",
               }}
             >
-              Browse Workouts
+              <span>Browse Workouts</span>
+
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="h-[15px] w-[15px]"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 5v14" />
+                <path d="m7 14 5 5 5-5" />
+              </svg>
             </a>
           </div>
 
