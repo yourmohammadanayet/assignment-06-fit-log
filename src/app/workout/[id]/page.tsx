@@ -9,9 +9,11 @@ type WorkoutDetailsPageProps = {
   }>;
 };
 
-async function getWorkout(id: string): Promise<Workout | null> {
+async function getWorkout(
+  id: string
+): Promise<Workout | null> {
   const response = await fetch(
-    `https://api.abcz.workers.dev/api/fitlog/${id}`,
+    `https://api.api-store.workers.dev/api/fitlog/${id}`,
     {
       cache: "no-store",
     }
@@ -84,54 +86,57 @@ export default async function WorkoutDetailsPage({
 
             {/* Right content */}
             <div className="flex flex-col">
-
               <h1
                 className="text-[38px] font-bold uppercase leading-[1.05] tracking-[0.01em] text-white sm:text-[44px]"
                 style={{
-                  fontFamily: "var(--font-oswald)",
+                  fontFamily:
+                    "var(--font-oswald)",
                 }}
               >
                 {workout.name}
               </h1>
 
-
               <p className="mt-4 max-w-[570px] text-[15px] leading-[24px] text-[#9CA3AF]">
                 {workout.description}
               </p>
 
-
               <div className="mt-5 flex flex-wrap gap-3">
-                {workout.muscleGroups.map((group) => (
-                  <span
-                    key={group}
-                    className="inline-flex items-center justify-center rounded-full bg-[#CCFF00] px-[14px] py-[5px] text-[11px] font-bold uppercase leading-[16.5px] tracking-[0.55px] text-black"
-                  >
-                    {group}
-                  </span>
-                ))}
+                {workout.muscleGroups.map(
+                  (group) => (
+                    <span
+                      key={group}
+                      className="inline-flex items-center justify-center rounded-full bg-[#CCFF00] px-[14px] py-[5px] text-[11px] font-bold uppercase leading-[16.5px] tracking-[0.55px] text-black"
+                    >
+                      {group}
+                    </span>
+                  )
+                )}
               </div>
 
               {/* Key specs */}
               <section className="mt-7">
                 <div className="overflow-hidden rounded-[16px] border border-[#262C37] bg-[#151922]">
-                  {specs.map((spec, index) => (
-                    <div
-                      key={spec.label}
-                      className={`flex min-h-[58px] items-center justify-between gap-5 px-6 ${
-                        index !== specs.length - 1
-                          ? "border-b border-[#252B35]"
-                          : ""
-                      }`}
-                    >
-                      <span className="text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#9CA3AF]">
-                        {spec.label}
-                      </span>
+                  {specs.map(
+                    (spec, index) => (
+                      <div
+                        key={spec.label}
+                        className={`flex min-h-[58px] items-center justify-between gap-5 px-6 ${
+                          index !==
+                          specs.length - 1
+                            ? "border-b border-[#252B35]"
+                            : ""
+                        }`}
+                      >
+                        <span className="text-[11px] font-bold uppercase leading-4 tracking-[0.08em] text-[#9CA3AF]">
+                          {spec.label}
+                        </span>
 
-                      <span className="text-right text-[14px] font-medium leading-5 text-[#E5E7EB]">
-                        {spec.value}
-                      </span>
-                    </div>
-                  ))}
+                        <span className="text-right text-[14px] font-medium leading-5 text-[#E5E7EB]">
+                          {spec.value}
+                        </span>
+                      </div>
+                    )
+                  )}
                 </div>
               </section>
 
@@ -142,23 +147,29 @@ export default async function WorkoutDetailsPage({
                 </h2>
 
                 <ol className="mt-5 space-y-4">
-                  {workout.instructions.map((instruction, index) => (
-                    <li
-                      key={instruction}
-                      className="flex items-start gap-3 text-[14px] leading-[22px] text-[#D1D5DB]"
-                    >
-                      <span className="shrink-0 text-[#9CA3AF]">
-                        {index + 1}.
-                      </span>
+                  {workout.instructions.map(
+                    (instruction, index) => (
+                      <li
+                        key={instruction}
+                        className="flex items-start gap-3 text-[14px] leading-[22px] text-[#D1D5DB]"
+                      >
+                        <span className="shrink-0 text-[#9CA3AF]">
+                          {index + 1}.
+                        </span>
 
-                      <span>{instruction}</span>
-                    </li>
-                  ))}
+                        <span>
+                          {instruction}
+                        </span>
+                      </li>
+                    )
+                  )}
                 </ol>
               </section>
 
               {/* Action buttons */}
-              <WorkoutActions workout={workout} />
+              <WorkoutActions
+                workout={workout}
+              />
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@ export default function WorkoutLibrary() {
     async function loadWorkouts() {
       try {
         const response = await fetch(
-          "https://api.abcz.workers.dev/api/fitlog"
+          "https://api.api-store.workers.dev/api/fitlog"
         );
 
         if (!response.ok) {
@@ -87,7 +87,6 @@ export default function WorkoutLibrary() {
       <div className="mx-auto w-full max-w-[1180px] px-4 sm:px-6 lg:px-8">
         {/* Heading + Controls */}
         <div className="mb-9 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-
           <div>
             <h2
               className="text-[34px] font-bold uppercase leading-none text-white sm:text-[40px]"
@@ -105,10 +104,8 @@ export default function WorkoutLibrary() {
 
           {/* Search + Sort */}
           <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end lg:w-auto">
-
             <div className="w-full sm:w-[270px]">
               <div className="relative">
-
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -140,7 +137,6 @@ export default function WorkoutLibrary() {
                   className="h-[40px] w-full rounded-[8px] border border-[#2B303D] bg-[#151921] py-2 pl-10 pr-10 text-[12px] text-white outline-none transition-colors placeholder:text-[#686F7B] focus:border-[#CCFF00]"
                 />
 
-
                 {searchTerm && (
                   <button
                     type="button"
@@ -164,7 +160,6 @@ export default function WorkoutLibrary() {
                 )}
               </div>
             </div>
-
 
             <div className="w-full sm:w-auto">
               <label
@@ -215,7 +210,6 @@ export default function WorkoutLibrary() {
           </div>
         </div>
 
-
         {loading && (
           <div className="flex min-h-[240px] items-center justify-center">
             <div className="flex items-center gap-3 text-sm text-[#9CA3AF]">
@@ -228,13 +222,11 @@ export default function WorkoutLibrary() {
           </div>
         )}
 
-
         {!loading && error && (
           <div className="rounded-[12px] border border-[#232732] bg-[#151921] px-5 py-8 text-center text-sm text-[#9CA3AF]">
             {error}
           </div>
         )}
-
 
         {!loading &&
           !error &&

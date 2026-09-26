@@ -35,11 +35,11 @@ FitLog is a responsive workout library and daily workout planner built with Next
 
 ### All Workouts
 
-https://api.abcz.workers.dev/api/fitlog
+https://api.api-store.workers.dev/api/fitlog
 
 ### Single Workout
 
-https://api.abcz.workers.dev/api/fitlog/:id
+https://api.api-store.workers.dev/api/fitlog/:id
 
 ## Routes
 
